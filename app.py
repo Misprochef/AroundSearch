@@ -19,8 +19,8 @@ def input():
 
 @app.route("/output", methods = ["POST"])
 def output():
-        keyword = request.form["keyword"]
-        return render_template("output.html", keyword = keyword)
+    keyword = request.form["keyword"]
+    return render_template("output.html", keyword = keyword)
 
 
 
