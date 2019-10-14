@@ -3,14 +3,33 @@ The flask application package.
 """
 import os
 from flask import Flask
-from myapp.instance.config import CONFIG
+# from myapp.instance.config import CONFIG
 
-SECRET_KEY = CONFIG["SECRET_KEY"]
+# SECRET_KEY = CONFIG["SECRET_KEY"]
 
-app = Flask(__name__, instance_path=r"C:\Users\jiked\OneDrive\python\myapp\instance")
-app.config.from_mapping(
-    SECRET_KEY=SECRET_KEY, DATABASE=os.path.join(app.instance_path, "around_search.db")
-)
+def create_app(test_config=None):
+    # create and configure the app
+    app = Flask(__name__, instance_relative_config=True)
+    app.config.from_mapping(
+        SECRET_KEY='dev',
+        DATABASE=os.path.join(app.instance_path, 'around_search.db'),
+    )
+
+    if test_config is None:
+        # load the instance config, if it exists, when not testing
+        app.config.from_pyfile('config.py', silent=True)
+    else:
+        # load the test config if passed in
+        app.config.from_mapping(test_config)
+    
+    return app
+
+# app = Flask(__name__, instance_path=r"C:\Users\jiked\OneDrive\python\myapp\instance")
+# app.config.from_mapping(
+#     SECRET_KEY=SECRET_KEY, DATABASE=os.path.join(app.instance_path, "around_search.db")
+# )
+
+app = create_app()
 
 from myapp.db import close_db
 

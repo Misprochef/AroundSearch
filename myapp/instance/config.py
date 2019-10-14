@@ -1,4 +1,4 @@
-CONFIG = {"SECRET_KEY": "dev"}
+CONFIG = {"SECRET_KEY": "b'@\xa9\xfd:\x83\x95\xe4mG\x12r\x80]Z-\xa7'"}
 
 GOOGLE_KEYS = {
     "GOOGLE_API_KEY": "AIzaSyCn1T_tw2elMmdr57OJQmv3qp_c-qFYC1w",
