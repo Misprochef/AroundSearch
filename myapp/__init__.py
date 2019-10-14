@@ -23,6 +23,11 @@ def create_app(test_config=None):
         # load the test config if passed in
         app.config.from_mapping(test_config)
     
+    try:
+        os.makedirs(app.instance_path)
+    except OSError:
+        pass
+    
     return app
 
 # app = Flask(__name__, instance_path=r"C:\Users\jiked\OneDrive\python\myapp\instance")
