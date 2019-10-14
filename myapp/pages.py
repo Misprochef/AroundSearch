@@ -9,7 +9,7 @@ from werkzeug.exceptions import abort
 from myapp.auth import login_required
 from myapp.db import get_db
 
-from myapp.instance.config import GOOGLE_KEYS
+from myapp.config import GOOGLE_KEYS
 from googleapiclient.discovery import build
 
 GOOGLE_API_KEY = GOOGLE_KEYS["GOOGLE_API_KEY"]
