@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+    <link rel="icon" href="../static/img/left_32.ico">
+    <link rel="apple-touch-icon" sizes="151x151" href="../static/img/left_151.png">
+    <link rel="stylesheet" href="../static/styles_layout.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="items">
+
+            <header>
+                <div class="row">
+                    <div class="col-md-12 title">
+                        <a href="/">
+                            <i class="fas fa-align-left d-inline-block"></i>
+                            <p>HOME</p>
+                        </a>
+                    </div>
+                </div>
+            </header>
+
+            <h2>{{ title }}</h2>
+
+
+            {% for category, message in get_flashed_messages(with_categories=true) %}
+            <div class="{{ category }}">{{ message }}</div>
+            {% endfor %}
+
+            <!-- {% if error_message %}
+            {% for category, error_message in get_flashed_messages(with_categories=true) %}
+            <div class="{{ category }}">{{ error_message }}</div>
+            {% endfor %}
+            {% endif %} -->
+
+            {% block content %}
+            {% endblock %}
+
+        </div>
+
+        <div class="row">
+            <hr class="hl-footer">
+        </div>
+
+        <div class="footer">
+            <p>お問い合わせ (準備中)</p>
+        </div>
+
+        <div class="footer footer-low">
+            <p>&copy; Misprochef</p>
+        </div>
+
+    </div>
+</body>
+
+</html>

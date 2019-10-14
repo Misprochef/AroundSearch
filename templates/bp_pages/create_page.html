@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<p class="memo">検索結果に追加したいWebサイトのタイトルを入れて検索して下さい<br>トップヒットしたサイトを表示します</p>
+
+<div class="row">
+    <hr class="hl">
+</div>
+
+{% if not result_display_link %}
+<form method="post">
+    <div class="form-group">
+        <label class="label">Webサイトのタイトルを入力</label>
+        <input type="text" class="form-control" name="search_keyword">
+    </div>
+    <button type="submit" class="btn btn-outline-primary">Search in Google</button>
+</form>
+{% else %}
+<div class="result">
+    <img src="http://www.google.com/s2/favicons?domain={{ result_display_link }}" class="card-favicon-img">
+    <p class="p-result">{{ result_title }}</p>
+</div>
+
+<form class="register-btn" method="post" name="register" action="{{ url_for("bp_pages.register_page") }}">
+    <button type="submit" class="btn btn-success">追加する</button>
+</form>
+
+<div class="row">
+    <hr class="hl">
+</div>
+
+<form method="post">
+    <div class="form-group again">
+        <label class="label">もう一度検索</label>
+        <input type="text" class="form-control" name="search_keyword">
+    </div>
+    <button type="submit" class="btn btn-outline-primary">Search in Google</button>
+</form>
+{% endif %}
+
+
+
+{% endblock %}

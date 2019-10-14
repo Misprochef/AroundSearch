@@ -1,0 +1,152 @@
+body {
+    margin: 0;
+}
+
+a {
+cursor: pointer !important;
+}
+
+.items {
+    margin-left: 30%;
+    margin-right: 23%;
+}
+
+.title a {
+    color: #78A98C;
+    text-decoration: none;
+}
+
+h2 {
+    color: #78A98C !important;
+    margin: 20px 0 20px;
+}
+
+.memo {
+    margin-bottom: 30px;
+}
+
+.label {
+    margin-bottom: 20px;
+}
+
+/* .tags {
+    display: flex;
+    flex-direction: column;
+} */
+
+.tag1 {
+    width: 10px !important;
+    padding-left: 0 !important;
+}
+
+.tag2 {
+    width: 300px !important;
+    padding-right: 0 !important;
+}
+
+.tag3 {
+    width: 60px !important;
+    padding-right: 0 !important;
+    margin-left: 50px !important;
+}
+
+.update-tag {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    font-size: 130%;
+}
+
+.a-tags {
+    color: #71838D !important;
+    text-decoration: none !important;
+}
+
+.del-tag {
+    font-size: 90%;
+}
+
+.result {
+    display: flex;
+    justify-content: flex-start;
+    margin: 10px 0 10px;
+}
+
+.result img {
+    width: auto;
+    height: 20px;
+    margin-top: 5px;
+}
+
+.p-result {
+    margin-left: 10px;
+    font-size: 20px;
+    color: #71838D !important;
+}
+
+.register-btn {
+    margin-bottom: 20px;
+}
+
+.again {
+    margin-top: 20px;
+}
+
+.hl {
+    width: 20%;
+    color: #DDDDDD;
+    margin-top: 22px;
+    margin-bottom: 30px;
+}
+
+.hl-footer {
+    width: 20%;
+    color: #DDDDDD;
+    margin-top: 150px;
+    margin-bottom: 40px;
+}
+
+.footer {
+    margin: 0 23% 0 0;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.footer p {
+    margin-bottom: 5px;
+    color: #71838D;
+}
+
+.footer-low {
+    margin-bottom: 50px !important;
+}
+
+@media (max-width: 576px) {
+/* form .btn {
+    display: none;
+} */
+
+.items {
+    margin-left: 5%;
+    margin-right: 3%
+}
+
+.footer {
+    margin: 0 3% 0 0;
+    display: flex;
+    justify-content: flex-end;
+}
+}
+
+@media (min-width: 576px) and (max-width: 769px) {
+    .items {
+        margin-left: 25%;
+        margin-right: 18%;
+    }
+
+    .footer {
+        margin: 0 18% 0 0;
+        display: flex;
+        justify-content: flex-end;
+    }
+}

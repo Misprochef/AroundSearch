@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>Around Search</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <link rel="stylesheet" href="../static/styles_output.css">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
   <link rel="icon" href="../static/img/left_32.ico">
@@ -14,23 +16,31 @@
 </head>
 
 <body>
-
-  <div class="header-row">
-  </div>
-
   <div class="container">
 
     <header>
+      {% if g.user %}
+      <div class="navibar">
+        <a class="item1" href="{{ url_for('bp_pages.index_pages') }}">Pages &raquo;</a>
+        <a class="item2" href="{{ url_for('bp_auth.logout') }}">ログアウト</a>
+        <a class="item3">{{ g.user['username'] }}</a>
+      </div>
+      {% else %}
+      <div class="navibar">
+        <a href="{{ url_for('bp_auth.create_user') }}">新規登録</a>
+        <a href="{{ url_for('bp_auth.login') }}">ログイン</a>
+      </div>
+      {% endif %}
       <div class="row">
         <div class="col-md-12">
           <nav class="navbar navbar-light">
             <a class="navbar-brand" href="/">
               <i class="fas fa-align-left d-inline-block"></i>
-              Around Search
+              <p>Around Search</p>
             </a>
-            <form class="form-inline" method="post" action="{{ url_for("output") }}">
+            <form class="form-inline form-input-go" method="post" action="{{ url_for("output") }}">
               <label class="sr-only" for="#">Search</label>
-              <input name="keyword" type="search" class="form-control mr-sm-2" id="#" placeholder="Go !">
+              <input name="keyword" type="search" class="form-control mr-sm-2" id="#" value="{{ keyword }}">
               <button type="submit" class="btn btn-outline-success">Search</button>
             </form>
           </nav>
@@ -47,157 +57,238 @@
 
       <div class="row">
 
+        {% if pages %}
+        {% for pg in pages %}
+        <!-- page -->
+        <div class="col-6 col-md-4">
+          <a href="https://www.google.co.jp/search?q={{keyword_on_site}}{{pg.page_domain}}" target="_blank">
+            <div class="card-header-img bg-white border-white text-secondary">
+              <img src="http://www.google.com/s2/favicons?domain={{pg.page_domain}}" class="card-favicon-img">
+              <p>{{pg.page_title}}</p>
+            </div>
+            <iframe class="hatenablogcard" style="width:100%;height:155px;max-width:680px;" title="{{keyword}}"
+              src="https://hatenablog-parts.com/embed?url=https://www.google.co.jp/search?q={{keyword_on_site}}{{pg.page_domain}}"
+              frameborder="0" scrolling="no"></iframe>
+          </a>
+        </div>
+        {% endfor %}
+        {% endif %}
+
         <!-- Wikipedia -->
-        <div class="col-md-4">
-          <a href="https://hatenablog-parts.com/embed?url=https://ja.wikipedia.org/wiki/{{keyword}}" target="_blank">
+        <div class="col-6 col-md-4">
+          <a href="https://ja.wikipedia.org/wiki/{{keyword}}" target="_blank">
             <div class="card-header-img bg-white border-white text-secondary">
               <img src="http://www.google.com/s2/favicons?domain=ja.wikipedia.org" class="card-favicon-img">
               <p>Wikipedia</p>
             </div>
-            <iframe class="hatenablogcard" style="width:100%;height:155px;max-width:680px;" title="{{keyword}}" src="https://hatenablog-parts.com/embed?url=https://ja.wikipedia.org/wiki/{{keyword}}"  frameborder="0" scrolling="no"></iframe>
+            <iframe class="hatenablogcard" style="width:100%;height:155px;max-width:680px;" title="{{keyword}}"
+              src="https://hatenablog-parts.com/embed?url=https://ja.wikipedia.org/wiki/{{keyword}}" frameborder="0"
+              scrolling="no"></iframe>
           </a>
         </div>
 
         <!-- Kotobank -->
-        <div class="col-md-4">
+        <div class="col-6 col-md-4">
           <a href="https://kotobank.jp/gs/?q={{keyword}}" target="_blank">
             <div class="card-header-img bg-white border-white text-secondary">
               <img src="http://www.google.com/s2/favicons?domain=www.kotobank.jp" class="card-favicon-img">
               <p>コトバンク</p>
             </div>
-            <iframe class="hatenablogcard" style="width:100%;height:155px;max-width:680px;" title="{{keyword}}" src="https://hatenablog-parts.com/embed?url=https://kotobank.jp/gs/?q={{keyword}}"  frameborder="0" scrolling="no"></iframe>
+            <iframe class="hatenablogcard" style="width:100%;height:155px;max-width:680px;" title="{{keyword}}"
+              src="https://hatenablog-parts.com/embed?url=https://kotobank.jp/gs/?q={{keyword}}" frameborder="0"
+              scrolling="no"></iframe>
           </a>
         </div>
 
-        <!-- weblio辞書 -->
-        <div class="col-md-4">
-          <a href="https://www.weblio.jp/content_find/contains/0/{{keyword}}" target="_blank">
+        <!-- goo 辞書 -->
+        <div class="col-6 col-md-4">
+          <a class="card-a" href="https://dictionary.goo.ne.jp/srch/all/{{keyword}}/m0u/" target="_blank">
             <div class="card-header-img bg-white border-white text-secondary">
-              <img src="http://www.google.com/s2/favicons?domain=www.weblio.jp" class="card-favicon-img">
-              <p>Weblio辞書</p>
+              <img src="http://www.google.com/s2/favicons?domain=dictionary.goo.ne.jp" class="card-favicon-img">
+              <p>goo 辞書</p>
             </div>
-            <div class="card">
-              <iframe class="hatenablogcard" style="width:100%;height:147px;max-width:680px;" title="{{keyword}}" src="https://www.weblio.jp/content_find/contains/0/{{keyword}}"  frameborder="0" scrolling="no"></iframe>
-            </div>
+            <!-- <div class="card"> -->
+            <iframe class="hatenablogcard" style="width:100%;height:155px;max-width:680px;" title="{{keyword}}"
+              src="https://hatenablog-parts.com/embed?url=https://www.google.co.jp/search?q={{keyword_on_site}}dictionary.goo.ne.jp"
+              frameborder="0" scrolling="no"></iframe>
+            <!-- </div> -->
           </a>
         </div>
 
-      </div>
-      <div class="row">
-
-        <!-- Qiita -->
-        <div class="col-md-4">
-          <a href="https://hatenablog-parts.com/embed?url=https://qiita.com/search?q={{keyword}}" target="_blank">
-            <div class="card-header-img bg-white border-white text-secondary">
-              <img src="http://www.google.com/s2/favicons?domain=www.qiita.com" class="card-favicon-img">
-              <p>Qiita</p>
-            </div>
-            <iframe class="hatenablogcard" style="width:100%;height:155px;max-width:680px;" title="{{keyword}}" src="https://hatenablog-parts.com/embed?url=https://qiita.com/search?q={{keyword}}"  frameborder="0" scrolling="no"></iframe>
-          </a>
-        </div>
+        <!-- </div>
+      <div class="row"> -->
 
         <!-- Naver まとめ -->
-        <div class="col-md-4">
+        <div class="col-6 col-md-4">
           <a href="https://matome.naver.jp/search?q={{keyword}}" target="_blank">
             <div class="card-header-img bg-white border-white text-secondary">
               <img src="http://www.google.com/s2/favicons?domain=matome.naver.jp" class="card-favicon-img">
               <p>Naver まとめ</p>
             </div>
-            <div class="card">
-              <iframe class="hatenablogcard" style="width:100%;height:147px;max-width:680px;" title="{{keyword}}" src="https://matome.naver.jp/search?q={{keyword}}"  frameborder="0" scrolling="no"></iframe>
-            </div>
+            <!-- <div class="card"> -->
+            <iframe class="hatenablogcard" style="width:100%;height:155px;max-width:680px;" title="{{keyword}}"
+              src="https://hatenablog-parts.com/embed?url=https://www.google.co.jp/search?q={{keyword_on_site}}matome.naver.jp"
+              frameborder="0" scrolling="no"></iframe>
+            <!-- </div> -->
           </a>
         </div>
 
         <!-- Yahoo! 知恵袋 -->
-        <div class="col-md-4">
-          <a href="https://chiebukuro.yahoo.co.jp/search/?p={{keyword}}&flg=3&class=1&ei=UTF-8&fr=common-navi" class="z-index-chiebukuro" target="_blank">
+        <div class="col-6 col-md-4">
+          <a href="https://chiebukuro.yahoo.co.jp/search/?p={{keyword}}&flg=3&class=1&ei=UTF-8&fr=common-navi"
+            class="z-index-chiebukuro" target="_blank">
             <div class="card-header-img bg-white border-white text-secondary">
               <img src="http://www.google.com/s2/favicons?domain=chiebukuro.yahoo.co.jp" class="card-favicon-img">
               <p>Yahoo! 知恵袋</p>
             </div>
-            <div class="card">
-              <iframe class="hatenablogcard" style="width:100%;height:147px;max-width:680px;" title="{{keyword}}" src="https://chiebukuro.yahoo.co.jp/search/?p={{keyword}}&flg=3&class=1&ei=UTF-8&fr=common-navi"  frameborder="0" scrolling="no"></iframe>
-            </div>
+            <!-- <div class="card"> -->
+            <iframe class="hatenablogcard" style="width:100%;height:155px;max-width:680px;" title="{{keyword}}"
+              src="https://hatenablog-parts.com/embed?url=https://www.google.co.jp/search?q={{keyword_on_site}}chiebukuro.yahoo.co.jp"
+              frameborder="0" scrolling="no"></iframe>
+            <!-- </div> -->
           </a>
         </div>
 
-      </div>
-      <div class="row">
+        <!-- </div>
+            <div class="row"> -->
 
         <!-- 教えて! goo -->
-        <div class="col-md-4">
-          <a href="https://oshiete.goo.ne.jp/search_goo/result/?MT={{keyword}}&code=utf8"  target="_blank">
+        <div class="col-6 col-md-4">
+          <a href="https://oshiete.goo.ne.jp/search_goo/result/?MT={{keyword}}&code=utf8" target="_blank">
             <div class="card-header-img bg-white border-white text-secondary">
               <img src="http://www.google.com/s2/favicons?domain=oshiete.goo.ne.jp" class="card-favicon-img">
               <p>教えて! goo</p>
             </div>
-            <div class="card">
-              <iframe class="hatenablogcard" style="width:100%;height:147px;max-width:680px;" title="{{keyword}}" src="https://oshiete.goo.ne.jp/search_goo/result/?MT={{keyword}}&code=utf8"  frameborder="0" scrolling="no"></iframe>
+            <!-- <div class="card"> -->
+            <iframe class="hatenablogcard" style="width:100%;height:155px;max-width:680px;" title="{{keyword}}"
+              src="https://hatenablog-parts.com/embed?url=https://www.google.co.jp/search?q={{keyword_on_site}}oshiete.goo.ne.jp"
+              frameborder="0" scrolling="no"></iframe>
+            <!-- </div> -->
+          </a>
+        </div>
+
+        <!-- Qiita -->
+        <div class="col-6 col-md-4">
+          <a href="https://qiita.com/search?q={{keyword}}" target="_blank">
+            <div class="card-header-img bg-white border-white text-secondary">
+              <img src="http://www.google.com/s2/favicons?domain=www.qiita.com" class="card-favicon-img">
+              <p>Qiita</p>
             </div>
+            <iframe class="hatenablogcard" style="width:100%;height:155px;max-width:680px;" title="{{keyword}}"
+              src="https://hatenablog-parts.com/embed?url=https://qiita.com/search?q={{keyword}}" frameborder="0"
+              scrolling="no"></iframe>
+          </a>
+        </div>
+
+        <!-- tetatail -->
+        <div class="col-6 col-md-4">
+          <a href="https://teratail.com/search?q={{keyword}}" target="_blank">
+            <div class="card-header-img bg-white border-white text-secondary">
+              <img src="http://www.google.com/s2/favicons?domain=teratail.com" class="card-favicon-img">
+              <p>tetatail</p>
+            </div>
+            <iframe class="hatenablogcard" style="width:100%;height:155px;max-width:680px;" title="{{keyword}}"
+              src="https://hatenablog-parts.com/embed?url=https://teratail.com/search?q={{keyword}}" frameborder="0"
+              scrolling="no"></iframe>
+          </a>
+        </div>
+
+        <!-- stack overflow -->
+        <div class="col-6 col-md-4">
+          <a href="https://ja.stackoverflow.com/search?q={{keyword}}" target="_blank">
+            <div class="card-header-img bg-white border-white text-secondary">
+              <img src="http://www.google.com/s2/favicons?domain=ja.stackoverflow.com" class="card-favicon-img">
+              <p>Stack Overflow</p>
+            </div>
+            <iframe class="hatenablogcard" style="width:100%;height:155px;max-width:680px;" title="{{keyword}}"
+              src="https://hatenablog-parts.com/embed?url=https://ja.stackoverflow.com/search?q={{keyword}}"
+              frameborder="0" scrolling="no"></iframe>
           </a>
         </div>
 
         <!-- Google ニュース -->
-        <div class="col-md-4">
+        <div class="col-6 col-md-4">
           <a href="https://news.google.com/search?q={{keyword}}&hl=ja&gl=JP&ceid=JP%3Aja" target="_blank">
             <div class="card-header-img bg-white border-white text-secondary">
               <img src="http://www.google.com/s2/favicons?domain=www.news.google.com" class="card-favicon-img">
               <p>Google ニュース</p>
             </div>
-            <iframe class="hatenablogcard" style="width:100%;height:155px;max-width:680px;" title="{{keyword}}" src="https://hatenablog-parts.com/embed?url=https://news.google.com/search?q={{keyword}}&hl=ja&gl=JP&ceid=JP%3Aja"  frameborder="0" scrolling="no"></iframe>
+            <iframe class="hatenablogcard" style="width:100%;height:155px;max-width:680px;" title="{{keyword}}"
+              src="https://hatenablog-parts.com/embed?url=https://news.google.com/search?q={{keyword}}&hl=ja&gl=JP&ceid=JP%3Aja"
+              frameborder="0" scrolling="no"></iframe>
           </a>
         </div>
 
         <!-- Twitter -->
-        <div class="col-md-4">
-          <a href="https://hatenablog-parts.com/embed?url=https://twitter.com/search?q={{keyword}}" target="_blank">
+        <div class="col-6 col-md-4">
+          <a href="https://twitter.com/search?q={{keyword}}" target="_blank">
             <div class="card-header-img bg-white border-white text-secondary">
               <img src="http://www.google.com/s2/favicons?domain=twitter.com" class="card-favicon-img">
               <p>Twitter</p>
             </div>
-            <iframe class="hatenablogcard" style="width:100%;height:155px;max-width:680px;" title="{{keyword}}" src="https://hatenablog-parts.com/embed?url=https://twitter.com/search?q={{keyword}}&src=typed_query"  frameborder="0" scrolling="no"></iframe>
+            <iframe class="hatenablogcard" style="width:100%;height:155px;max-width:680px;" title="{{keyword}}"
+              src="https://hatenablog-parts.com/embed?url=https://twitter.com/search?q={{keyword}}&src=typed_query"
+              frameborder="0" scrolling="no"></iframe>
           </a>
         </div>
 
-      </div>
-      <div class="row">
+        <!-- </div>
+      <div class="row"> -->
 
         <!-- facebook -->
-        <div class="col-md-4">
+        <!-- <div class="col-md-4">
           <a href="https://www.facebook.com/search/top/?q={{keyword}}&epa=SEARCH_BOX" target="_blank">
             <div class="card-header-img bg-white border-white text-secondary">
               <img src="http://www.google.com/s2/favicons?domain=www.facebook.com" class="card-favicon-img">
               <p>Facebook</p>
               <p class="text-secondary remarks">※カードは現在表示されません</p>
             </div>
-            <iframe class="hatenablogcard" style="width:100%;height:155px;max-width:680px;" title="{{keyword}}" src="https://www.facebook.com/search/top/?q={{keyword}}&epa=SEARCH_BOX"  frameborder="0" scrolling="no"></iframe>
+            <iframe class="hatenablogcard" style="width:100%;height:155px;max-width:680px;" title="{{keyword}}"
+              src="https://www.facebook.com/search/top/?q={{keyword}}&epa=SEARCH_BOX" frameborder="0"
+              scrolling="no"></iframe>
           </a>
-        </div>
+        </div> -->
 
         <!-- Instagram -->
-        <div class="col-md-4">
+        <!-- <div class="col-md-4">
           <a href="https://www.instagram.com/explore/tags/{{keyword}}/?hl=ja" target="_blank">
             <div class="card-header-img bg-white border-white text-secondary">
               <img src="http://www.google.com/s2/favicons?domain=www.instagram.com" class="card-favicon-img">
               <p>Instagram</p>
               <p class="text-secondary remarks">※カードは現在表示されません</p>
             </div>
-            <iframe class="hatenablogcard" style="width:100%;height:155px;max-width:680px;" title="{{keyword}}" src="https://www.instagram.com/explore/tags/{{keyword}}/?hl=ja"  frameborder="0" scrolling="no"></iframe>
+            <iframe class="hatenablogcard" style="width:100%;height:155px;max-width:680px;" title="{{keyword}}"
+              src="https://www.instagram.com/explore/tags/{{keyword}}/?hl=ja" frameborder="0" scrolling="no"></iframe>
           </a>
-        </div>
+        </div> -->
 
         <!-- YouTube -->
-        <div class="col-md-4">
+        <div class="col-6 col-md-4">
           <a href="https://www.youtube.com/results?search_query={{keyword}}" target="_blank">
             <div class="card-header-img bg-white border-white text-secondary">
               <img src="http://www.google.com/s2/favicons?domain=www.youtube.com" class="card-favicon-img">
               <p>YouTube</p>
-              <p class="text-secondary remarks">※カードは現在表示されません</p>
+              <!-- <p class="text-secondary remarks">※カードは現在表示されません</p> -->
             </div>
-            <iframe class="hatenablogcard" style="width:100%;height:155px;max-width:680px;" title="{{keyword}}" src="https://www.youtube.com/results?search_query={{keyword}}"  frameborder="0" scrolling="no"></iframe>
+            <iframe class="hatenablogcard" style="width:100%;height:155px;max-width:680px;" title="{{keyword}}"
+              src="https://hatenablog-parts.com/embed?url=https://www.google.co.jp/search?q={{keyword_on_site}}www.youtube.com"
+              frameborder="0" scrolling="no"></iframe>
           </a>
         </div>
+
+        <!-- Google -->
+        <!-- <div class="col-md-4">
+          <a href="https://hatenablog-parts.com/embed?url=https://www.google.co.jp/search?q={{keyword}}"
+            target="_blank">
+            <div class="card-header-img bg-white border-white text-secondary">
+              <img src="http://www.google.com/s2/favicons?domain=www.google.co.jp" class="card-favicon-img">
+              <p>Google</p>
+            </div>
+            <iframe class="hatenablogcard" style="width:100%;height:155px;max-width:680px;" title="{{keyword}}"
+              src="https://hatenablog-parts.com/embed?url=https://www.google.co.jp/search?q={{keyword}}" frameborder="0"
+              scrolling="no"></iframe>
+          </a>
+        </div> -->
 
       </div>
 
@@ -208,8 +299,11 @@
     </div>
 
     <div class="footer">
+      <p>お問い合わせ (準備中)</p>
+    </div>
+
+    <div class="footer footer-low">
       <p>&copy; Misprochef</p>
-      <p>お問い合わせ（準備中）</p>
     </div>
 
   </div>
@@ -223,9 +317,16 @@
 //   $('body').css('padding-top',height);
 // });
   </script>
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
 
 </body>
+
 </html>

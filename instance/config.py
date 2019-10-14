@@ -1,0 +1,7 @@
+CONFIG = {"SECRET_KEY": "dev"}
+
+GOOGLE_KEYS = {
+    "GOOGLE_API_KEY": "AIzaSyCn1T_tw2elMmdr57OJQmv3qp_c-qFYC1w",
+    "CUSTOM_SEARCH_ENGINE_ID": "018135131531454067016:qp0rc0xr4tz",
+}
+

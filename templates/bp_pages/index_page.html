@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<p class="memo">ここに追加したWebサイトが検索結果に追加され、結果を比較できます<br>自分好みに編集してみよう</p>
+
+<table class="table table-hover">
+    <!-- <thead>
+            <tr>
+                <th></th>
+            </tr>
+        </thead> -->
+    <tbody class="tags">
+        {% for pg in pages %}
+        <tr>
+            <td class="tag1"><img src="http://www.google.com/s2/favicons?domain={{ pg.page_domain }}"
+                    class="card-favicon-img">
+            </td>
+            <td class="tag2">{{ pg.page_title }}</td>
+            <td class="tag3">
+                <!-- <a href="{{ url_for('bp_pages.update_page', page_id=pg.id) }}">編集</a>｜ -->
+                <a class="a-tags del-tag" href="{{ url_for('bp_pages.delete_page', page_id=pg.id) }}">削除</a>
+            </td>
+        </tr>
+        {% else %}
+        <td>Pageはまだ登録されていません</td>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="update-tag">
+    <a class="a-tags" href="{{ url_for('bp_pages.create_page') }}">Pageの新規追加</a>
+</div>
+{% endblock %}

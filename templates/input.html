@@ -18,6 +18,18 @@
   <div class="container">
 
     <header>
+      {% if g.user %}
+      <div class="navibar">
+        <a class="item1" href="{{ url_for('bp_pages.index_pages') }}">Pages &raquo;</a>
+        <a class="item2" href="{{ url_for('bp_auth.logout') }}">ログアウト</a>
+        <p class="item3">{{ g.user['username'] }}</p>
+      </div>
+      {% else %}
+      <div class="navibar">
+        <a href="{{ url_for('bp_auth.create_user') }}">新規登録</a>
+        <a href="{{ url_for('bp_auth.login') }}">ログイン</a>
+      </div>
+      {% endif %}
       <div class="row">
         <div class="col-md-12 title">
           <a href="/">
@@ -35,9 +47,9 @@
           <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form> -->
 
-        <form class="form-inline" method="post" action="{{ url_for("output") }}">
+        <form class="form-inline form-input-go" method="post" action="{{ url_for("output") }}">
           <label class="sr-only" for="#">Search</label>
-          <input name="keyword" type="search" class="form-control mr-sm-2" placeholder="Go !" id="#">
+          <input name="keyword" type="search" class="form-control mr-sm-2 go-frame" placeholder="Go !" id="#">
           <button type="submit" class="btn btn-outline-success">Search</button>
         </form>
       </div>
@@ -49,17 +61,27 @@
     </div>
 
     <div class="row headline">
-      <h2>ピックアップされた12のWebページを検索します</h2>
-      <p><a href="https://ja.wikipedia.org/wiki" target="_blank">Wikipedia</a> | <a href="https://kotobank.jp"
-          target="_blank">コトバンク</a> | <a href="https://www.weblio.jp" target="_blank">Weblio辞書</a> | <a
-          href="https://qiita.com" target="_blank">Qiita</a></p>
-      <p><a href="https://matome.naver.jp" target="_blank">Naverまとめ</a> | <a href="https://chiebukuro.yahoo.co.jp"
-          target="_blank">Yahoo! 知恵袋</a> | <a href="https://oshiete.goo.ne.jp" target="_blank">教えて! goo</a></p>
-      <p><a href="https://news.google.com/?hl=ja&gl=JP&ceid=JP:ja" target="_blank">Google ニュース</a> | <a
-          href="https://twitter.com" target="_blank">Twitter</a> | <a href="https://www.facebook.com"
-          target="_blank">Facebook</a></p>
-      <p><a href="https://www.instagram.com" target="_blank">Instagram</a> | <a href="https://www.youtube.com"
-          target="_blank">YouTube</a></p>
+      {% for category, message in get_flashed_messages(with_categories=true) %}
+      <div class="{{ category }}">{{ message }}</div>
+      {% endfor %}
+      <div class="below_message"></div>
+    </div>
+
+
+    {% if g.user %}
+    <div class="row headline">
+      <h2>設定したPagesの一覧です</h2>
+      {% if pages %}
+      {% for pg in pages %}
+      <p class="a_setted_own"><a href="{{ pg.page_url }}" target="_blank">{{ pg.page_title }}</a></p>
+      {% endfor %}
+      {% else %}
+      <p>Pageはまだありません</p>
+      <p>下のリンクから追加してみよう</p>
+      {% endif %}
+      <div class="guide_div guide-pages">
+        <a class="guiding" href="{{ url_for('bp_pages.index_pages') }}">Pageの追加・削除</a>
+      </div>
     </div>
 
     <div class="row">
@@ -67,8 +89,46 @@
     </div>
 
     <div class="row headline">
-      <h2>今後は自分好みに検索するWebページを設定できるようになる予定です</h2>
+      <p><a href="https://ja.wikipedia.org/wiki" target="_blank">Wikipedia</a> | <a href="https://kotobank.jp"
+          target="_blank">コトバンク</a> | <a href="https://dictionary.goo.ne.jp" target="_blank">goo 辞書</a> | <a
+          href="https://matome.naver.jp" target="_blank">Naverまとめ</a></p>
+      <p><a href="https://chiebukuro.yahoo.co.jp" target="_blank">Yahoo! 知恵袋</a> | <a href="https://oshiete.goo.ne.jp"
+          target="_blank">教えて! goo</a> | <a href="https://qiita.com" target="_blank">Qiita</a></p>
+      <p><a href="https://teratail.com" target="_blank">teratail</a> | <a href="https://ja.stackoverflow.com"
+          target="_blank">Stack Overflow</a> | <a href="https://news.google.com/?hl=ja&gl=JP&ceid=JP:ja"
+          target="_blank">Google ニュース</a></p>
+      <p><a href="https://twitter.com" target="_blank">Twitter</a> | <a href="https://www.youtube.com"
+          target="_blank">YouTube</a></p>
     </div>
+    {% else %}
+    <div class="row headline">
+      <h2>ピックアップされた12のWebページを検索します</h2>
+      <p><a href="https://ja.wikipedia.org/wiki" target="_blank">Wikipedia</a> | <a href="https://kotobank.jp"
+          target="_blank">コトバンク</a> | <a href="https://dictionary.goo.ne.jp" target="_blank">goo 辞書</a> | <a
+          href="https://matome.naver.jp" target="_blank">Naverまとめ</a></p>
+      <p><a href="https://chiebukuro.yahoo.co.jp" target="_blank">Yahoo! 知恵袋</a> | <a href="https://oshiete.goo.ne.jp"
+          target="_blank">教えて! goo</a> | <a href="https://qiita.com" target="_blank">Qiita</a></p>
+      <p><a href="https://teratail.com" target="_blank">teratail</a> | <a href="https://ja.stackoverflow.com"
+          target="_blank">Stack Overflow</a> | <a href="https://news.google.com/?hl=ja&gl=JP&ceid=JP:ja"
+          target="_blank">Google ニュース</a></p>
+      <p><a href="https://twitter.com" target="_blank">Twitter</a> | <a href="https://www.youtube.com"
+          target="_blank">YouTube</a></p>
+    </div>
+    {% endif %}
+
+    {% if not g.user %}
+    <div class="row">
+      <hr class="hl">
+    </div>
+
+    <div class="row headline">
+      <h2>新規登録(ログイン)すると自分好みに検索するWebページを設定できるようになります</h2>
+      <div class="guide_div">
+        <a class="guiding" href="{{ url_for('bp_auth.create_user') }}">新規登録はこちらから</a>
+        <a class="guiding" href="{{ url_for('bp_auth.login') }}">ログイン</a>
+      </div>
+    </div>
+    {% endif %}
 
     <div class="row">
       <hr class="hl">
@@ -83,8 +143,11 @@
     </div>
 
     <div class="footer">
+      <p>お問い合わせ(準備中)</p>
+    </div>
+
+    <div class="footer footer-low">
       <p>&copy; Misprochef</p>
-      <p>お問い合わせ（準備中）</p>
     </div>
 
   </div>

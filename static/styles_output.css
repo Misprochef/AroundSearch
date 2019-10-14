@@ -1,7 +1,43 @@
+body {
+  margin: 0;
+}
+
+a {
+  cursor: pointer !important;
+}
+
 .header-row {
   width: 100%;
   height: 30px;
 }
+
+.navibar {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: row-reverse;
+  flex-wrap: wrap;
+  /* margin-left: 30%;
+  margin-right: 23%; */
+  margin-top: 15px;
+  margin-bottom: 20px;
+}
+
+.navibar a {
+  color: #71838D !important;
+  text-decoration: none;
+  margin-left: 5%;
+  margin-top: 10px;
+}
+
+.navbar a {
+  color: #78A98C !important;
+  text-decoration: none;
+  padding-right: 10px;
+}
+
+/* .navbar p {
+  padding-left: 10px;
+} */
 
 input {
   margin-bottom: 0;
@@ -15,6 +51,11 @@ section.cards {
   margin-bottom: 60px;
   padding: 0 20px;
 }
+
+/* .card-a {
+  position: absolute !important;
+  z-index: 9999 !important;
+} */
 
 .cards img {
   width: 200px;
@@ -30,13 +71,18 @@ section.cards {
   width: 16px !important;
   height: 16px !important;
   position: absolute;
-  bottom: 8px;
+  bottom: 14px;
 }
 
 .card-header-img  p {
   position: absolute;
-  bottom: -11px;
+  bottom: -5px;
   left: 34px;
+  width: 80%;
+  /* margin-right: 20%; */
+  white-space: nowrap; /* 横幅のMAXに達しても改行しない */
+  overflow: hidden; /* ハミ出した部分を隠す */
+  text-overflow: ellipsis; /* 「…」と省略 */
 }
 
 .card-header-img .remarks {
@@ -46,9 +92,9 @@ section.cards {
   font-size: 70%;
 }
 
-.z-index-chiebukuro {
+/* .z-index-chiebukuro {
   z-index: 3000;
-}
+} */
 
 .hl {
   width: 20%;
@@ -58,27 +104,66 @@ section.cards {
 }
 
 .footer {
-  margin: 0 30%;
+  /* margin: 0 23% 0 0; */
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
 }
 
 .footer p {
   color: #71838D;
+  margin-bottom: 5px;
+}
+
+.footer-low {
+  margin-bottom: 50px !important;
 }
 
 @media (max-width: 576px) {
+  .navibar {
+    margin: 5px 3% 5px 0;
+  }
+
+  .navibar a {
+    color: #71838D !important;
+    text-decoration: none;
+    margin-left: 10%;
+    /* margin-top: 10px; */
+  }
+
+  .navbar {
+    padding-top: 0;
+  }
+
+  .form-input-go {
+    width: 90%;
+  }
+
   form .btn {
     display: none;
   }
 
   .footer {
-    margin: 0 5%;
+    /* margin: 0 3% 0 0; */
+    display: flex;
+    justify-content: flex-end;
   }
 }
 
 @media (min-width: 576px) and (max-width: 769px) {
+  .navibar {
+    margin: 15px 0 10px;
+  }
+
+  .navibar a {
+    color: #71838D !important;
+    text-decoration: none;
+    margin-left: 10%;
+    margin-top: 10px;
+  }
+
   .footer {
-    margin: 0 25%;
+    /* margin: 0 18% 0 0; */
+    display: flex;
+    justify-content: flex-end;
   }
 }
