@@ -8,7 +8,6 @@ from flask import Flask
 # SECRET_KEY = CONFIG["SECRET_KEY"]
 
 def create_app(test_config=None):
-    # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
     # app = Flask(__name__, instance_path=r"C:\Users\jiked\OneDrive\python\myapp\instance")
     app.config.from_mapping(
