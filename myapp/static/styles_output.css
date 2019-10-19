@@ -35,6 +35,13 @@ a {
   padding-right: 10px;
 }
 
+.item3 {
+  color: black !important;
+  text-decoration: none;
+  margin-left: 5%;
+  margin-top: 10px;
+}
+
 /* .navbar p {
   padding-left: 10px;
 } */

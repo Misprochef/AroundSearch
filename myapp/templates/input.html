@@ -18,11 +18,11 @@
   <div class="container">
 
     <header>
-      {% if g.user %}
+      {% if current_user.is_authenticated %}
       <div class="navibar">
         <a class="item1" href="{{ url_for('bp_pages.index_pages') }}">Pages &raquo;</a>
         <a class="item2" href="{{ url_for('bp_auth.logout') }}">ログアウト</a>
-        <p class="item3">{{ g.user['username'] }}</p>
+        <p class="item3">{{ current_user.username }}</p>
       </div>
       {% else %}
       <div class="navibar">
@@ -61,14 +61,20 @@
     </div>
 
     <div class="row headline">
-      {% for category, message in get_flashed_messages(with_categories=true) %}
-      <div class="{{ category }}">{{ message }}</div>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">
+        {{ message }}
+      </div>
       {% endfor %}
+      {% endif %}
+      {% endwith %}
       <div class="below_message"></div>
     </div>
 
 
-    {% if g.user %}
+    {% if current_user.is_authenticated %}
     <div class="row headline">
       <h2>設定したPagesの一覧です</h2>
       {% if pages %}
@@ -116,7 +122,7 @@
     </div>
     {% endif %}
 
-    {% if not g.user %}
+    {% if not current_user.is_authenticated %}
     <div class="row">
       <hr class="hl">
     </div>

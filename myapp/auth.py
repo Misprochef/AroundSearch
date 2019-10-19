@@ -1,9 +1,6 @@
-"""
-ログイン処理などを行う
-"""
-
 from datetime import datetime
-import functools
+
+# import functools
 from flask import (
     Blueprint,
     flash,
@@ -15,8 +12,11 @@ from flask import (
     url_for,
 )
 
-from werkzeug.security import check_password_hash, generate_password_hash
-from myapp.db import get_db
+# from werkzeug.security import check_password_hash, generate_password_hash
+from myapp import db, login_manager, bcrypt
+from myapp.forms import RegistrationForm, LoginForm
+from myapp.models import User, Page
+from flask_login import login_user, current_user, logout_user, login_required
 
 bp_auth = Blueprint(
     "bp_auth", __name__, template_folder="templates", static_folder="static"
@@ -25,152 +25,74 @@ bp_auth = Blueprint(
 
 @bp_auth.route("/create_user", methods=["GET", "POST"])
 def create_user():
-    """
-    GET ：ユーザー登録画面に遷移
-    POST：ユーザー登録処理を実施
-    """
-    if request.method == "GET":
-        # ユーザー登録画面に遷移
-        return render_template(
-            "bp_auth/create_user.html", title="新規登録", year=datetime.now().year
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode(
+            "utf-8"
         )
-
-    # ユーザー登録処理
-
-    # 登録フォームから送られてきた、ユーザー名とパスワードを取得
-    username = request.form["username"]
-    password = request.form["password"]
-
-    # DBと接続
-    db = get_db()
-
-    # エラーチェック
-    error_message = None
-
-    if not username:
-        error_message = "ユーザー名の入力は必須です"
-    elif not password:
-        error_message = "パスワードの入力は必須です"
-    elif (
-        db.execute("SELECT id FROM user WHERE username = ?", (username,)).fetchone()
-        is not None
-    ):
-        error_message = "ユーザー名 {} はすでに使用されています".format(username)
-
-    if error_message is not None:
-        # エラーがあれば、それを画面に表示させる
-        flash(error_message, category="alert alert-danger")
-        return redirect(url_for("bp_auth.create_user"))
-
-    # エラーがなければテーブルに登録する
-    # パスワードはハッシュ化したものを登録
-    db.execute(
-        "INSERT INTO user (username, password) VALUES (?, ?)",
-        (username, generate_password_hash(password)),
-    )
-    db.commit()
-
-    # ログイン画面へ遷移
-    user = db.execute("SELECT * FROM user WHERE username = ?", (username,)).fetchone()
-
-    session.clear()
-    session["user_id"] = user["id"]
-    flash("{}さんとして登録しました".format(username), category="alert alert-info")
-    return redirect(url_for("input"))
-
-    # flash("ユーザー登録が完了しました。登録した内容でログインしてください", category="alert alert-info")
-    # return redirect(url_for("bp_auth.login_as_first", username=username))
+        user = User(username=form.username.data, password=hashed_password)
+        db.session.add(user)
+        db.session.commit()
+        flash(
+            "{} さん として登録しました 続けて登録したユーザー名・パスワードを入力しログインしてください".format(
+                form.username.data
+            ),
+            "success",
+        )
+        return redirect(url_for("bp_auth.login"))
+    return render_template("bp_auth/create_user.html", title="新規登録", form=form)
 
 
 @bp_auth.route("/login", methods=["GET", "POST"])
 def login():
-    """
-    GET ：ログイン画面に遷移
-    POST：ログイン処理を実施
-    """
-    if request.method == "GET":
-        # ログイン画面に遷移
-        return render_template(
-            "bp_auth/login.html", title="ログイン", year=datetime.now().year
-        )
-
-    # ログイン処理
-
-    # ログインフォームから送られてきた、ユーザー名とパスワードを取得
-    username = request.form["username"]
-    password = request.form["password"]
-
-    # DBと接続
-    db = get_db()
-
-    # ユーザー名とパスワードのチェック
-    error_message = None
-
-    user = db.execute("SELECT * FROM user WHERE username = ?", (username,)).fetchone()
-
-    if user is None:
-        error_message = "ユーザー名が正しくありません"
-    elif not check_password_hash(user["password"], password):
-        error_message = "パスワードが正しくありません"
-
-    if error_message is not None:
-        # エラーがあればそれを表示したうえでログイン画面に遷移
-        flash(error_message, category="alert alert-danger")
-        return redirect(url_for("bp_auth.login"))
-
-    # エラーがなければ、セッションにユーザーIDを追加してインデックスページへ遷移
-    session.clear()
-    session["user_id"] = user["id"]
-    # flash("{}さんとしてログインしました".format(username), category="alert alert-info")
-    return redirect(url_for("input"))
-
-
-# @bp_auth.route("/create_user", methods=["GET", "POST"])
-# def login_as_first(username):
-#     db = get_db()
-#     user = db.execute("SELECT * FROM user WHERE username = ?", (username,)).fetchone()
-
-#     session.clear()
-#     session["user_id"] = user["id"]
-#     # flash("{}さんとして登録しました".format(username), category="alert alert-info")
-#     return redirect(url_for("input"))
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user and bcrypt.check_password_hash(user.password, form.password.data):
+            login_user(user)
+            # next_page = request.args.get("next")
+            return redirect(url_for("input"))
+        elif user is None:
+            flash("ユーザー名が間違っています", "danger")
+        else:
+            flash("パスワードが間違っています", "danger")
+    return render_template("bp_auth/login.html", title="ログイン", form=form)
 
 
 @bp_auth.route("/logout")
 def logout():
-    """ログアウトする"""
-    session.clear()
-    # flash("ログアウトしました", category="alert alert-info")
+    logout_user()
+    flash("ログアウトしました", "info")
     return redirect(url_for("input"))
 
 
-@bp_auth.before_app_request
-def load_logged_in_user():
-    """
-    どのURLが要求されても、ビュー関数の前で実行される関数
-    ログインしているか確認し、ログインされていればユーザー情報を取得する
-    """
-    user_id = session.get("user_id")
+# @bp_auth.before_app_request
+# def load_logged_in_user():
+#     """
+#     どのURLが要求されても、ビュー関数の前で実行される関数
+#     ログインしているか確認し、ログインされていればユーザー情報を取得する
+#     """
+#     user_id = session.get("user_id")
 
-    if user_id is None:
-        g.user = None
-    else:
-        db = get_db()
-        g.user = db.execute("SELECT * FROM user WHERE id = ?", (user_id,)).fetchone()
+#     if user_id is None:
+#         g.user = None
+#     else:
+#         db = get_db()
+#         g.user = db.execute("SELECT * FROM user WHERE id = ?", (user_id,)).fetchone()
 
 
-def login_required(view):
-    """
-    ユーザーがログインされているかどうかをチェックし、
-    そうでなければログインページにリダイレクト
-    """
+# def login_required(view):
+#     """
+#     ユーザーがログインされているかどうかをチェックし、
+#     そうでなければログインページにリダイレクト
+#     """
 
-    @functools.wraps(view)
-    def wrapped_view(**kwargs):
-        if g.user is None:
-            flash("ログインをしてから操作してください", category="alert alert-warning")
-            return redirect(url_for("bp_auth.login"))
+#     @functools.wraps(view)
+#     def wrapped_view(**kwargs):
+#         if g.user is None:
+#             flash("ログインをしてから操作してください", category="alert alert-warning")
+#             return redirect(url_for("bp_auth.login"))
 
-        return view(**kwargs)
+#         return view(**kwargs)
 
-    return wrapped_view
+#     return wrapped_view

@@ -2,7 +2,42 @@
 
 {% block content %}
 
-<form method="post">
+<div class="content-section">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <div class="form-group">
+                {{ form.username.label(class="form-control-label") }}
+                {% if form.username.errors %}
+                {{ form.username(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.username.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.username(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.password.label(class="form-control-label") }}
+                {% if form.password.errors %}
+                {{ form.password(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.password.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.password(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <button type="submit" class="btn btn-primary">Sign-in</button>
+        </fieldset>
+    </form>
+</div>
+
+<!-- <form method="post">
     <div class="form-group">
         <label>ユーザー名</label>
         <input type="text" class="form-control" name="username">
@@ -12,6 +47,6 @@
         <input type="password" class="form-control" name="password">
     </div>
     <button type="submit" class="btn btn-primary">Sign-in</button>
-</form>
+</form> -->
 
 {% endblock %}

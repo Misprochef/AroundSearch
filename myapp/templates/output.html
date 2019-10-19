@@ -19,11 +19,11 @@
   <div class="container">
 
     <header>
-      {% if g.user %}
+      {% if current_user.is_authenticated %}
       <div class="navibar">
         <a class="item1" href="{{ url_for('bp_pages.index_pages') }}">Pages &raquo;</a>
         <a class="item2" href="{{ url_for('bp_auth.logout') }}">ログアウト</a>
-        <a class="item3">{{ g.user['username'] }}</a>
+        <p class="item3">{{ current_user.username }}</p>
       </div>
       {% else %}
       <div class="navibar">

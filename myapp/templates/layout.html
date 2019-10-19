@@ -32,15 +32,15 @@
             <h2>{{ title }}</h2>
 
 
-            {% for category, message in get_flashed_messages(with_categories=true) %}
-            <div class="{{ category }}">{{ message }}</div>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+                {{ message }}
+            </div>
             {% endfor %}
-
-            <!-- {% if error_message %}
-            {% for category, error_message in get_flashed_messages(with_categories=true) %}
-            <div class="{{ category }}">{{ error_message }}</div>
-            {% endfor %}
-            {% endif %} -->
+            {% endif %}
+            {% endwith %}
 
             {% block content %}
             {% endblock %}

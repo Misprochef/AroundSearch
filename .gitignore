@@ -3,3 +3,5 @@ __pycache__/
 instance/
 myapp/instance/config.py
 myapp/instance/config.py
+myapp/config.py
+myapp/myapp/config.py

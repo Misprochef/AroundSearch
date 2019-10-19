@@ -1,13 +1,15 @@
-"""
-Webページ一覧の取得・新規追加・編集・削除を行う
-"""
-
 from datetime import datetime
 from flask import Blueprint, flash, redirect, render_template, request, url_for, session
 
 from werkzeug.exceptions import abort
-from myapp.auth import login_required
-from myapp.db import get_db
+
+# from myapp.auth import login_required
+from myapp import db
+from myapp.forms import PageForm
+from myapp.models import User, Page
+from flask_login import current_user, login_required
+
+# from myapp.db import get_db
 
 from myapp.config import GOOGLE_KEYS
 from googleapiclient.discovery import build
@@ -23,19 +25,8 @@ bp_pages = Blueprint(
 @bp_pages.route("/")
 @login_required
 def index_pages():
-
-    db = get_db()
-
-    # Pageデータを取得
-    user_id = session.get("user_id")
-    pages = db.execute(
-        "SELECT * FROM pages WHERE user_id = ? ORDER BY id DESC", (user_id,)
-    ).fetchall()
-
-    # Page一覧画面へ遷移
-    return render_template(
-        "bp_pages/index_page.html", pages=pages, title="Pages", year=datetime.now().year
-    )
+    pages = Page.query.all()
+    return render_template("bp_pages/index_page.html", title="Pages", pages=pages)
 
 
 @bp_pages.route("/create_page", methods=("GET", "POST"))
@@ -75,7 +66,7 @@ def create_page():
 
         return response
 
-    # 登録フォームから送られてきた値を取得
+    #     # 登録フォームから送られてきた値を取得
 
     if request.method == "POST":
         global search_keyword
@@ -106,90 +97,42 @@ def create_page():
 @bp_pages.route("/index_page", methods=("GET", "POST"))
 @login_required
 def register_page():
-
-    if request.method == "POST":
-        # Page登録処理
-
-        # ユーザーIDを取得
-        user_id = session.get("user_id")
-
-        # DBと接続
-        db = get_db()
-
-        # エラーチェック
-        error_message = None
-
-        if not search_keyword:
-            error_message = "Pageの入力は必須です"
-
-        if error_message is not None:
-            # エラーがあれば、それを画面に表示させる
-            flash(error_message, category="alert alert-danger")
-            return redirect(url_for("bp_pages.create_page"))
-
-        # エラーがなければテーブルに登録する
-        page_title = result_title
-        page_url = result_link
-        page_domain = result_display_link
-
-        db.execute(
-            "INSERT INTO pages (user_id, page_title, page_url, page_domain) VALUES (?, ?, ?, ?)",
-            (user_id, page_title, page_url, page_domain),
-        )
-        # db.execute("INSERT INTO pages (order_number) VALUES (order_number + 1)")
-        db.commit()
-
-        # Page一覧画面へ遷移
-        # flash("Pageが追加されました", category="alert alert-info")
-        return redirect(url_for("bp_pages.index_pages"))
+    # form = PageForm()
+    # if form.validate_on_submit():
+    page = Page(
+        user_id=current_user.id,
+        page_title=result_title,
+        page_url=result_link,
+        page_domain=result_display_link,
+    )
+    db.session.add(page)
+    db.session.commit()
+    # flash()
+    return redirect(url_for("bp_pages.index_pages"))
 
 
 @bp_pages.route("/<int:page_id>/update_page", methods=("GET", "POST"))
 @login_required
 def update_page(page_id):
-    """
-    GET ：page更新画面に遷移
-    POST：page更新処理を実施
-    """
     pass
 
 
 @bp_pages.route("/<int:page_id>/delete_page", methods=("GET", "POST"))
 @login_required
 def delete_page(page_id):
-    """
-    GET ：page削除確認画面に遷移
-    POST：page削除処理を実施
-    """
-    # 書籍データの取得と存在チェック
-    page = get_page_and_check(page_id)
-
-    # if request.method == 'GET':
-    #     # 書籍削除確認画面に遷移
-    #     return render_template('book/delete_book.html',
-    #                            book=book,
-    #                            title='書籍の削除',
-    #                            year=datetime.now().year)
-
-    # 書籍の削除処理
-
-    if page:
-        db = get_db()
-        db.execute("DELETE FROM pages WHERE id = ?", (page_id,))
-        db.commit()
-
-        # 書籍一覧画面へ遷移
-        # flash('書籍が削除されました', category='alert alert-info')
-        return redirect(url_for("bp_pages.index_pages"))
+    page = Page.query.get(page_id)
+    db.session.delete(page)
+    db.session.commit()
+    return redirect(url_for("bp_pages.index_pages"))
 
 
-def get_page_and_check(page_id):
-    """pageの取得と存在チェックのための関数"""
-    # 書籍データの取得
-    db = get_db()
-    page = db.execute("SELECT * FROM pages WHERE id = ? ", (page_id,)).fetchone()
+# def get_page_and_check(page_id):
+#     """pageの取得と存在チェックのための関数"""
+#     # 書籍データの取得
+#     db = get_db()
+#     page = db.execute("SELECT * FROM pages WHERE id = ? ", (page_id,)).fetchone()
 
-    if page is None:
-        abort(404, "Sorry, page does not exist")
+#     if page is None:
+#         abort(404, "Sorry, page does not exist")
 
-    return page
+#     return page
