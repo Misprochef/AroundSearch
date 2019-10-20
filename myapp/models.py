@@ -13,9 +13,10 @@ def load_user(user_id):
 
 class User(db.Model, UserMixin):
     __tablename__ = "user"
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(), unique=True, nullable=False)
     password = db.Column(db.String(), nullable=False)
+    children = db.relationship("Page")
 
     def __repr__(self):
         return "User('{}')".format(self.username)
@@ -23,7 +24,7 @@ class User(db.Model, UserMixin):
 
 class Page(db.Model):
     __tablename__ = "pages"
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     order_number = db.Column(db.Integer)
     page_title = db.Column(db.Text(), nullable=False)

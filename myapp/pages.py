@@ -25,7 +25,7 @@ bp_pages = Blueprint(
 @bp_pages.route("/")
 @login_required
 def index_pages():
-    pages = Page.query.all()
+    pages = Page.query.filter_by(user_id=current_user.id).all()
     return render_template("bp_pages/index_page.html", title="Pages", pages=pages)
 
 

@@ -88,6 +88,15 @@ h2 {
     margin-bottom: 20px;
 }
 
+.error-note {
+    margin: 50px 0;
+    color: #71838D;
+}
+
+.error-note .solution{
+    margin-top: 30px;
+}
+
 .again {
     margin-top: 20px;
 }

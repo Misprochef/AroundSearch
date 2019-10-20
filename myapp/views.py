@@ -12,11 +12,12 @@ from flask import (
 from datetime import datetime
 from myapp import app
 from myapp.models import User, Page
+from flask_login import current_user, login_required
 
 
 def UserInfo():
     try:
-        pages = Page.query.all()
+        pages = Page.query.filter_by(user_id=current_user.id).all()
         return pages
     except:
         pass
